@@ -1,0 +1,145 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/avinoamr/connect-slashes">connect-slashes (v1.3.1)</a>
+</h1>
+<h4>Trailing slash redirect middleware for Connect and Express.js</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.connect-slashes">module connect-slashes</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.connect-slashes.connect-slashes">
+            function <span class="apidocSignatureSpan"></span>connect-slashes
+            <span class="apidocSignatureSpan">( append, options )</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.connect-slashes" id="apidoc.module.connect-slashes">module connect-slashes</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.connect-slashes.connect-slashes" id="apidoc.element.connect-slashes.connect-slashes">
+        function <span class="apidocSignatureSpan"></span>connect-slashes
+        <span class="apidocSignatureSpan">( append, options )</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">connect-slashes = function ( append, options ) {
+    options = options || {};
+    ( append === false ) || ( append = true ); // default to append slashes mode
+
+    return function slashes( req, res, next ) {
+
+        if ( "GET" == req.method ) {
+            // Use originalUrl when defined ( for express compatibility);
+            var url = (req.originalUrl || req.url).split( reQuery )
+              , location = url[ 0 ]
+              , redirect
+              , headers;
+
+            if ( append &amp;&amp; "/" != location[ location.length - 1 ] ) {
+
+                // append slashes
+                redirect = location + "/";
+
+            } else if ( !append &amp;&amp; "/" == location[ location.length - 1 ] &amp;&amp; "/" != location ) {
+
+                // remove slashes
+                redirect = location.slice( 0, location.length - 1 );
+
+            }
+
+            // complete the redirect url
+            if ( redirect ) {
+                if ( url.length &gt; 1 ) {
+                    redirect += "?" + url.slice( 1 ).join( "&amp;" );
+                }
+
+                redirect = ( options.base || "" ) + redirect; // prepend the base path
+                redirect = redirect.replace( reDoubleSlashes, "/" ); // see issue #2
+
+                if ( "/" != redirect[ 0 ] ) {
+                    redirect = "/" + redirect; // guarantee absolute redirect
+                }
+
+                headers = options.headers || {};
+                headers[ "Location" ] = redirect;
+
+                res.writeHead( options.code || 301, headers );
+                res.end();
+                return;
+            }
+
+        }
+        next();
+
+    };
+
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
